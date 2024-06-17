@@ -1,12 +1,7 @@
-// #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-
 use std::sync::Arc;
 use std::thread;
 use dotenvy::dotenv;
-use log::info;
 use tokio::sync::{Notify};
-use windows_hotkeys::HotkeyManagerImpl;
-use windows_hotkeys::singlethreaded::HotkeyManager;
 use tokio::sync::broadcast;
 
 mod tray;
@@ -39,16 +34,12 @@ async fn main() {
     volume::spawn_up_adjustment(up_rx);
     volume::spawn_down_adjustment(down_rx);
     timer::spawn(timer_notifier);
+    
+    hotkeys::register_up_hotkey(up_tx.clone(), timer_notifier_up.clone());
+    hotkeys::register_down_hotkey(down_tx.clone(), timer_notifier_down.clone());
 
     thread::spawn(move || {
-        let mut hkm = HotkeyManager::new();
-
-        hotkeys::register_up_hotkey(&mut hkm, up_tx.clone(), timer_notifier_up.clone());
-        hotkeys::register_down_hotkey(&mut hkm, down_tx.clone(), timer_notifier_down.clone());
-
-        info!("Hotkeys registered. Starting event loop.");
-
-        hkm.event_loop();
+        inputbot::handle_input_events();
     });
 
     tray::init_tray();
