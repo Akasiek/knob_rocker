@@ -1,4 +1,4 @@
-<div style="text-align: center">
+<div style="text-align: center" align="center">
     <img src="icons/icon.ico"/>
 </div>
 
@@ -31,7 +31,7 @@ you run the application for the first time. Also, you'll need to add `http://loc
 Spotify Developer Dashboard.
 
 After entering the Client ID and Secret and API authorization, it will create two files in 
-`%APPDATA%\.config\knob_rocker` directory. Those files store the Client ID and Secret, as well as the cache API token. 
+`~\.config\knob_rocker` directory. Those files store the Client ID and Secret, as well as the cache API token. 
 
 ## How to build
 
