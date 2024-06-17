@@ -1,6 +1,33 @@
 use log::{error, info};
 use rspotify::AuthCodeSpotify;
 use rspotify::clients::OAuthClient;
+use crate::spotify::auth::spotify_auth;
+
+pub async fn test_spotify_auth() -> bool {
+    let spotify = spotify_auth().await;
+
+    let spotify = match spotify {
+        Some(spotify) => spotify,
+        None => {
+            error!("Could not authenticate with Spotify.");
+            return false;
+        }
+    };
+
+    info!("Testing Spotify authentication.");
+    let response = spotify.me().await;
+
+    match response {
+        Ok(_) => {
+            info!("Successfully authenticated with Spotify.");
+            true
+        }
+        Err(e) => {
+            error!("Could not authenticate with Spotify: {}", e);
+            false
+        }
+    }
+}
 
 pub async fn get_current_device_id(spotify: &AuthCodeSpotify) -> Option<String> {
     let devices = spotify.device().await;
@@ -29,6 +56,7 @@ pub async fn get_current_device_id(spotify: &AuthCodeSpotify) -> Option<String> 
         }
     };
 
+    info!("Found active device: {:?}", device.name);
     Some(device_id)
 }
 
@@ -80,7 +108,7 @@ pub async fn raise_volume(spotify: &AuthCodeSpotify, raise_by: u8, device_id: St
 
 pub async fn lower_volume(spotify: &AuthCodeSpotify, lower_by: u8, device_id: String) {
     let current_volume = get_volume(spotify, device_id.clone()).await.unwrap();
-    
+
     let new_volume = if (current_volume as i16) - (lower_by as i16) < 0 {
         0
     } else {

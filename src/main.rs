@@ -1,4 +1,4 @@
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+// #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::sync::Arc;
 use std::thread;
@@ -8,6 +8,7 @@ use tokio::sync::{Notify};
 use windows_hotkeys::HotkeyManagerImpl;
 use windows_hotkeys::singlethreaded::HotkeyManager;
 use tokio::sync::broadcast;
+
 mod tray;
 mod spotify;
 mod volume;
@@ -24,7 +25,9 @@ enum Message {
 async fn main() {
     dotenv().ok();
     env_logger::init();
-    info!("Logger initialized.");
+    
+    #[cfg(not(debug_assertions))]
+    spotify::hide_console_window_after_auth().await;
 
     let (up_tx, up_rx) = broadcast::channel(32);
     let (down_tx, down_rx) = broadcast::channel(32);

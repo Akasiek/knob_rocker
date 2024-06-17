@@ -1,4 +1,4 @@
-use log::error;
+use log::{error, info};
 use crate::volume;
 use crate::spotify::api::{get_current_device_id, lower_volume, raise_volume};
 
@@ -15,8 +15,7 @@ pub async fn set_spotify_volume() {
             return;
         }
     };
-
-
+    
     let volume = volume::get_mutex_value();
 
     if volume < 0 {
@@ -26,4 +25,17 @@ pub async fn set_spotify_volume() {
     }
 
     volume::set_mutex_value(0);
+}
+
+pub async fn hide_console_window_after_auth() {
+    let is_logged_in_to_spotify = api::test_spotify_auth().await;
+
+    if !is_logged_in_to_spotify {
+        return;
+    }
+
+    info!("Authenticated with Spotify successfully. Hiding console window.");
+    unsafe {
+        winapi::um::wincon::FreeConsole()
+    };
 }
