@@ -5,14 +5,21 @@ use crate::{Message, volume};
 
 static VOLUME: Mutex<i32> = Mutex::new(0);
 
-pub fn set_mutex_value(new_value: i32) {
+pub fn adjust_mutex_value(adjustment: i32) {
     let mut volume = VOLUME.lock().unwrap();
+    
+    let new_value = *volume + adjustment;
     
     *volume = match new_value {
         x if x <= -100 => -100,
         x if x >= 100 => 100,
         x => x,
     };
+}
+
+pub fn set_mutex_value(value: i32) {
+    let mut volume = VOLUME.lock().unwrap();
+    *volume = value;
 }
 
 pub fn get_mutex_value() -> i32 {
@@ -41,6 +48,5 @@ fn spawn(mut receiver: Receiver<Message>, adjustment: i32) {
 async fn adjust_volume(receiver: &mut Receiver<Message>, adjustment: i32) {
     receiver.recv().await.unwrap();
 
-    let new_value = volume::get_mutex_value() + adjustment;
-    volume::set_mutex_value(new_value);
+    adjust_mutex_value(adjustment);
 }
