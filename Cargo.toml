@@ -11,12 +11,13 @@ dialoguer = "0.11.0"
 
 inputbot = "0.6.0"
 winapi = { version = "0.3", features = ["winuser", "wincon"] }
-tray-item = "0.10.0"
+tray-item = { version = "0.10.0", features = ["ksni"] }
 
 dotenvy = "0.15.7"
 toml = "0.8.14"
 env_logger = "0.11.3"
 log = "0.4.21"
+png = "0.17.13"
 
-[build-dependencies]
-windres = "*"
+[target.'cfg(windows)'.build-dependencies]
+windres = "0.2.2"

@@ -34,8 +34,14 @@ pub async fn hide_console_window_after_auth() {
         return;
     }
 
+    #[cfg(not(windows))]
+    {
+        return;
+    }
+
     info!("Authenticated with Spotify successfully. Hiding console window.");
     unsafe {
+        #[cfg(windows)]
         winapi::um::wincon::FreeConsole()
     };
 }
