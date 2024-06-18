@@ -5,18 +5,22 @@ edition = "2021"
 
 [dependencies]
 tokio = { version = "1.38.0", features = ["rt", "rt-multi-thread", "macros", "sync"] }
-
 rspotify = { version = "0.13.1", features = ["env-file", "cli"] }
 dialoguer = "0.11.0"
 
 inputbot = "0.6.0"
 winapi = { version = "0.3", features = ["winuser", "wincon"] }
-tray-item = { version = "0.10.0", features = ["ksni"] }
 
 dotenvy = "0.15.7"
 toml = "0.8.14"
 env_logger = "0.11.3"
 log = "0.4.21"
+
+[target.'cfg(windows)'.dependencies]
+tray-item = "0.10.0"
+
+[target.'cfg(unix)'.dependencies]
+tray-item = { version = "0.10.0", features = ["ksni"] }
 png = "0.17.13"
 
 [target.'cfg(windows)'.build-dependencies]
