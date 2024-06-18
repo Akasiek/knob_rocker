@@ -9,14 +9,15 @@ enum Message {
 }
 
 pub fn init_tray() {
-    #[cfg(windows)]
-    let icon = get_icon_windows();
-    #[cfg(unix)]
-    let icon = get_icon_unix();
+    let icon = if cfg!(windows) {
+        get_icon_windows()
+    } else {
+        get_icon_unix()
+    };
 
     let mut tray = TrayItem::new(
         "Knob Rocker",
-        get_icon_windows(),
+        icon,
     ).unwrap();
 
     #[cfg(windows)]
