@@ -18,7 +18,19 @@ pub fn init_tray() {
     tray.inner_mut().add_label_with_id("Knob Rocker").unwrap();
     #[cfg(unix)]
     tray.inner_mut().add_label("Knob Rocker").unwrap();
-
+    
+    tray.inner_mut().add_separator().unwrap();
+    
+    tray.add_menu_item("Show Terminal", move || {
+        crate::spotify::show_console_window();
+    })
+        .unwrap();
+    
+    tray.add_menu_item("Hide Terminal", move || {
+        crate::spotify::hide_console_window();
+    })
+        .unwrap();
+    
     let (tx, rx) = mpsc::sync_channel(1);
 
     let quit_tx = tx.clone();

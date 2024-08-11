@@ -11,7 +11,6 @@ pub async fn set_spotify_volume() {
     let device_id = match get_current_device_id(&spotify).await {
         Some(device_id) => device_id,
         None => {
-            error!("Could not find active device.");
             return;
         }
     };
@@ -34,6 +33,10 @@ pub async fn hide_console_window_after_auth() {
         return;
     }
 
+    hide_console_window();
+}
+
+pub fn hide_console_window() {
     #[cfg(not(windows))]
     {
         return;
@@ -44,4 +47,20 @@ pub async fn hide_console_window_after_auth() {
         #[cfg(windows)]
         winapi::um::wincon::FreeConsole()
     };
+}
+
+pub fn show_console_window() {
+    #[cfg(not(windows))]
+    {
+        return;
+    }
+
+    info!("Showing console window.");
+    unsafe {
+        #[cfg(windows)]
+        winapi::um::consoleapi::AllocConsole()
+    };
+
+    println!("Console window shown. To hide it, use the tray menu. DO NOT close this window manual.");
+    println!("To get more information, set the log level to debug in the .env file.");
 }
