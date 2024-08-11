@@ -96,7 +96,16 @@ pub async fn set_volume(spotify: &AuthCodeSpotify, volume: u8, device_id: String
 }
 
 pub async fn raise_volume(spotify: &AuthCodeSpotify, raise_by: u8, device_id: String) {
-    let current_volume = get_volume(spotify, device_id.clone()).await.unwrap();
+    let current_volume = get_volume(spotify, device_id.clone()).await;
+    
+    let current_volume = match current_volume {
+        Some(volume) => volume,
+        None => {
+            error!("Could not change volume.");
+            return;
+        }
+    };
+    
     let mut new_volume = current_volume + raise_by;
 
     if new_volume > 100 {
@@ -107,7 +116,15 @@ pub async fn raise_volume(spotify: &AuthCodeSpotify, raise_by: u8, device_id: St
 }
 
 pub async fn lower_volume(spotify: &AuthCodeSpotify, lower_by: u8, device_id: String) {
-    let current_volume = get_volume(spotify, device_id.clone()).await.unwrap();
+    let current_volume = get_volume(spotify, device_id.clone()).await;
+    
+    let current_volume = match current_volume {
+        Some(volume) => volume,
+        None => {
+            error!("Could not change volume.");
+            return;
+        }
+    };
 
     let new_volume = if (current_volume as i16) - (lower_by as i16) < 0 {
         0
