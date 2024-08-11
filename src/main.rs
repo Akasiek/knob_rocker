@@ -9,6 +9,7 @@ mod spotify;
 mod volume;
 mod hotkeys;
 mod timer;
+mod windows;
 
 #[derive(Debug, Clone, PartialEq)]
 enum Message {

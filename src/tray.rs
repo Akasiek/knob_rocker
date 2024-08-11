@@ -21,13 +21,15 @@ pub fn init_tray() {
     
     tray.inner_mut().add_separator().unwrap();
     
+    #[cfg(windows)]
     tray.add_menu_item("Show Terminal", move || {
-        crate::spotify::show_console_window();
+        crate::windows::show_console_window();
     })
         .unwrap();
     
+    #[cfg(windows)]
     tray.add_menu_item("Hide Terminal", move || {
-        crate::spotify::hide_console_window();
+        crate::windows::hide_console_window();
     })
         .unwrap();
     
